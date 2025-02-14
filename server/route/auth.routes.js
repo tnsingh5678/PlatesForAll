@@ -11,8 +11,9 @@ const validator = (email) => {
 }
 
 router.post("/signup",async (req,res)=>{
+    const { username , password , email} = req.body;
     try {
-        const { username , password , email} = req.body;
+        
         if(!username || !password || !email){
             return res.status(401).json({
                 message: "All fields are required"
@@ -49,7 +50,7 @@ router.post("/signup",async (req,res)=>{
         
     } catch (error) {
         res.status(500).json({
-            message: "Server error while creating new user"
+            message: "Server error while creating new user",
         })
     }
 });

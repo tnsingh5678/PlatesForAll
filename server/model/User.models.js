@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-const UserSchema = new Schema({
+const UserSchema = new mongoose.Schema({
     username:{
         type: String,
         required: true,
@@ -14,12 +14,12 @@ const UserSchema = new Schema({
         required: true
     },
     latitude:{
-        type: Number,
+        type: String,
         required: true,
         default: 0
     },
     longitude:{
-        type: Number,
+        type: String,
         required: true,
         default: 0
     },

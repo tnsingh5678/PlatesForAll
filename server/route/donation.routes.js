@@ -3,21 +3,35 @@ import Donation from "../model/Donation.models.js";
 import User from "../model/User.models.js";
 import nodemailer from "nodemailer"
 
-const mailer = nodemailer.createTransport({
-    service: 'gmail',
+const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: process.env.SMTP_SECURE === 'true',
     auth:{
-        user : process.env.email,
-        password: process.env.password
+        user : process.env.EMAIL,
+        pass:process.env.PASSWORD
+    },
+    tls: {
+        rejectUnauthorized: false
     }
-})
+});
+
+// transporter.verify((error, success) => {
+//     if (error) {
+//         console.log('Error verifying SMTP connection:', error);
+//     } else {
+//         console.log('SMTP connection verified');
+//     }
+// });
 
 const sendEmail = async (email) =>{
     const mailOptions = {
-        from : process.env.email,
+        from : process.env.EMAIL,
         to : email,
         subject : "Vounteering request for you",
-        text : "We are happy to announce you that you got a chance to volunteer with us.Click on the button below to accept the request."
+        html : `<p>We are happy to announce you that you got a chance to volunteer with us.Click on the button below to accept the request. ${email}</p>`
     }
+    // console.log(mailOptions);
 
     try {
         const info = await transporter.sendMail(mailOptions);
@@ -47,18 +61,20 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
 
 router.post('/donor',async(req,res) => {
     try {
-        const {food , expiryDate , time , category , address , Donor } = req.body;
-        if(!food || !expiryDate || !time || !category || address || !Donor){
+        const {food , category , address , DonorId } = req.body;
+        if(!food || !category || category.length === 0 || !address || !DonorId){
             return res.status(401).json({
                 message: "All fields are required"
             })
         }
+
+        const Donor = await User.findById(DonorId);
     
         const donation = new Donation({
             food,
-            expiryDate,
+            expiryDate : Date.now() + 24 * 60 * 60 * 1000,
             category,
-            time,
+            time : Date.now(),
             Address:address,
             Donor: Donor,
             Volunteer: null,
@@ -66,8 +82,10 @@ router.post('/donor',async(req,res) => {
             Longitude: 0,
             Status: false
         });
+        donation.save();
         res.status(200).json({
-            message: "Donation created successfully"
+            message: "Donation created successfully",
+            donation
         })
     } catch (error) {
         res.status(500).json({
@@ -77,8 +95,13 @@ router.post('/donor',async(req,res) => {
 
 })
 
-router.post('/find',async(req,res) => {
+router.get('/find',async(req,res) => {
     const {latitude , longitude , DonationId} = req.body;
+    if(!latitude || !longitude || !DonationId){
+        return res.statusMessage(400).json({
+            message: "All fields are required"
+        })
+    }
     const donation = await Donation.findById(DonationId);
     const volunteers = [];
     // want to go into user db and find all users who have distance of less than 5km into volunteers find using latitude , longtude
@@ -98,19 +121,28 @@ router.post('/find',async(req,res) => {
         })
     }
     // send notification to all volunteers
+    // console.log(process.env.email);
+    // console.log(process.env.password)
     for(let vol of volunteers){
-        sendEmail(vol.email);
+        // console.log(vol.email)
+        // sendEmail(vol.email);
     }
     const expirationTime = Date.now() + 30 * 60 * 1000;
+    res.status(200).json({
+        message : "Message sent to volunteers",
+        volunteers
+    })
     // send message to all volunteers
 })
 
 
-router.post('/pick:volunteerId', async(req,res) => {
+router.post('/pick', async(req,res) => {
     try {
-        const volunteerId = req.params;
-        const donationId = req.body;
-        if(!volunteerId || donationId){
+        
+        const {donationId , volunteerId }= req.body;
+        console.log(volunteerId)
+        console.log(donationId)
+        if(!volunteerId || !donationId){
             return res.status(401).json({
                 message: "VolunteerId or DonationId not found"
             })
@@ -122,7 +154,7 @@ router.post('/pick:volunteerId', async(req,res) => {
                 message: "Volunteer or Donation not found"
             })
         }
-        if(donation.volunteer){
+        if(donation.Volunteer){
             return res.status(200).json({
                 message : "Item request already acceppted . Try next time . Thank you for connecting with us."
             })
@@ -130,7 +162,8 @@ router.post('/pick:volunteerId', async(req,res) => {
         donation.Volunteer = volunteer;
         donation.save();
         return res.status(200).json({
-            message: "Donation request accepted by the volunteer"
+            message: "Donation request accepted by the volunteer",
+            donation
         })
     } catch (error) {
         res.status(500).json({
@@ -139,10 +172,10 @@ router.post('/pick:volunteerId', async(req,res) => {
     }
 })
 
-router.post('/drop:donationId', async (req,res) =>{
+router.post('/drop', async (req,res) =>{
     try {
-        const donationId = req.params;
-        const {Lon , Lat} = req.body;
+        
+        const {Lon , Lat , donationId} = req.body;
         const donation = await Donation.findById(donationId);
         const destinationLon = donation.Longitude;
         const destinationLat = donation.Latitude;
@@ -161,5 +194,7 @@ router.post('/drop:donationId', async (req,res) =>{
         })
     }
 })
+
+export default router;
 
 

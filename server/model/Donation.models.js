@@ -1,12 +1,12 @@
 import mongoose from "mongoose"
 
-const DonationSchema = new Schema({
+const DonationSchema = new mongoose.Schema({
     food:{
         type: String,
         required: true
     },
     expiryDate:{
-        type: Date,
+        type: String,
         required: true
     },
     time:{
@@ -33,14 +33,14 @@ const DonationSchema = new Schema({
         required: true
     },
     Latitude:{
-        type: Number,
+        type: String,
         required: true,
-        default : 0
+        default : '0'
     },
     Longitude:{
-        type: Number,
+        type: String,
         required: true,
-        default : 0
+        default : '0'
     },
     Status:{
         type: Boolean,
