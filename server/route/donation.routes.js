@@ -1,6 +1,33 @@
 import express from "express"
 import Donation from "../model/Donation.models.js";
 import User from "../model/User.models.js";
+import nodemailer from "nodemailer"
+
+const mailer = nodemailer.createTransport({
+    service: 'gmail',
+    auth:{
+        user : process.env.email,
+        password: process.env.password
+    }
+})
+
+const sendEmail = async (email) =>{
+    const mailOptions = {
+        from : process.env.email,
+        to : email,
+        subject : "Vounteering request for you",
+        text : "We are happy to announce you that you got a chance to volunteer with us.Click on the button below to accept the request."
+    }
+
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log("Email : ",info.response);
+        return info;
+    } catch (error) {
+        console.error('Error sending email:', error);
+        return error;
+    }
+}
 
 const router = express.Router();
 
@@ -71,12 +98,15 @@ router.post('/find',async(req,res) => {
         })
     }
     // send notification to all volunteers
+    for(let vol of volunteers){
+        sendEmail(vol.email);
+    }
     const expirationTime = Date.now() + 30 * 60 * 1000;
     // send message to all volunteers
 })
 
 
-router.post(`/pick:volunteerId`, async(req,res) => {
+router.post('/pick:volunteerId', async(req,res) => {
     try {
         const volunteerId = req.params;
         const donationId = req.body;
@@ -92,6 +122,11 @@ router.post(`/pick:volunteerId`, async(req,res) => {
                 message: "Volunteer or Donation not found"
             })
         }
+        if(donation.volunteer){
+            return res.status(200).json({
+                message : "Item request already acceppted . Try next time . Thank you for connecting with us."
+            })
+        }
         donation.Volunteer = volunteer;
         donation.save();
         return res.status(200).json({
@@ -104,7 +139,7 @@ router.post(`/pick:volunteerId`, async(req,res) => {
     }
 })
 
-router.post(`/drop:donationId`, async (req,res) =>{
+router.post('/drop:donationId', async (req,res) =>{
     try {
         const donationId = req.params;
         const {Lon , Lat} = req.body;

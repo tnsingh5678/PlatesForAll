@@ -20,12 +20,12 @@ const DonationSchema = new Schema({
     },
     Donor:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'USER',
+        ref: 'DUSER',
         required: true
     },
     Volunteer:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "USER",
+        ref: "DUSER",
         required: false
     },
     Address:{
