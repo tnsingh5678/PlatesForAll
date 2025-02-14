@@ -18,12 +18,32 @@ const DonationSchema = new Schema({
         type: [String],
         required: false
     },
+    Donor:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'USER',
+        required: true
+    },
     Volunteer:{
-        type: Schema.Types.ObjectId,
-        ref: "VOLUNTEER"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "USER",
+        required: false
     },
     Address:{
         type: String,
+        required: true
+    },
+    Latitude:{
+        type: Number,
+        required: true,
+        default : 0
+    },
+    Longitude:{
+        type: Number,
+        required: true,
+        default : 0
+    },
+    Status:{
+        type: Boolean,
         required: true
     }
 },{
