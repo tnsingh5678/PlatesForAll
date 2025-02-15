@@ -136,7 +136,7 @@ router.get('/find',async(req,res) => {
 })
 
 
-router.post('/pick', async(req,res) => {
+router.post('/accept', async(req,res) => {
     try {
         
         const {donationId , volunteerId }= req.body;
@@ -168,6 +168,40 @@ router.post('/pick', async(req,res) => {
     } catch (error) {
         res.status(500).json({
             message : "Server error while accepting the request for the volunteer"
+        })
+    }
+})
+
+router.post('/pick', async(req,res) => {
+    const {volunteerId , donationId , Lat , Lon} = req.body;
+    try {
+        if(!volunteerId || !donationId){
+            return res.status(400).json({
+                message: "Volunteer or Donation Id not found";
+            })
+        }
+        const donation = await Donation.findById(donationId);
+        const volunteer = await User.findById(volunteerId);
+        if(donation.Volunteer != volunteer){
+            return res.status(200).json({
+                message: "Volunteer not matched."
+            })
+        }
+        const donor = donation.Donor;
+        const donorLat = donor.latitude;
+        const donorLon = donor.longitude;
+        if(donorLat != Lat || donorLon != Lon){
+            return res.status(400).json({
+                message : "Location not matched wth the location of donor"
+            })
+        }
+        return res.status(200).json({
+            message : "Item picked successfully",
+            donation
+        })
+    } catch (error) {
+        res.status(500).json({
+            message : "Error while picking the item"
         })
     }
 })
