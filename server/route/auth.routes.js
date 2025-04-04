@@ -109,5 +109,88 @@ router.post('/login',async (req,res)=>{
     }
 });
 
+router.delete('/delete' , async(req,res) => {
+    const {userId} = req.body;
+    try {
+        if(!userId){
+            return res.status(400).json({
+                message : "UserId is invalid"
+            })
+        }
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(400).json({
+                message : "User not found"
+            })
+        }
+        await User.deleteOne({ _id: userId });
+        res.status(200).json({
+            message : "User deleted successfully"
+        })
+    } catch (error) {
+        res.status(500).json({
+            message : "Error while deleting user"
+        })
+    }
+    
+})
+
+router.patch('/update' , async (req,res) => {
+    const {username , email, userId} = req.body;
+    try {
+        if(!username || !email || !userId){
+            return res.status(400).json({
+                message : "All fields are required"
+            })
+        } 
+        const user = await User.findById(userId)
+        if(!user){
+            return res.status(400).json({
+                message : "User not found"
+            })
+        }
+        user.email = email;
+        user.username = username;
+        user.save();
+        res.status(200).json({
+            message : "User details updated successfully",
+            user
+        })
+    } catch (error) {
+        res.status(500).json({
+            message : "Error while updating user details"
+        })
+    }
+
+})
+
+router.patch('/password',async(req,res) => {
+    const {password,userId} = req.body;
+    try {
+        if(!password || !userId){
+            return res.status(400).json({
+                message : "All fields are required"
+            })
+        }
+        const user = await User.findById(userId)
+        if(!user){
+            return res.status(400).json({
+                message : "User not found"
+            })
+        }
+        const HashedPassword = await bcrypt.hash(password,10);
+        user.password = HashedPassword;
+        user.save();
+        res.status(200).json({
+            message : "Password updated successfully"
+        })
+    } catch (error) {
+        res.status(500).json({
+            message : "Error while updating password"
+        })
+    }
+
+})
+
 
 export default router;
