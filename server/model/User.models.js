@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import Donation from "./Donation.models.js";
 
 const UserSchema = new mongoose.Schema({
     username:{
@@ -30,7 +31,12 @@ const UserSchema = new mongoose.Schema({
     },
     volunteering:{
         type: [mongoose.Schema.Types.ObjectId],
+        ref : "DONATION",
         required: false
+    },
+    requests:{
+        type : [mongoose.Schema.Types.ObjectId],
+        ref : 'DONATION'
     }
 
 },{
