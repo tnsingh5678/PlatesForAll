@@ -6,6 +6,7 @@ import Signup from './pages/SignUp';
 import { AuthProvider } from './context/AuthContext';
 import { ToastContainer } from 'react-toastify';
 import { UserProvider } from './context/UserContext';
+import { AcceptedRequestProvider } from './context/AcceptedRequestContext';
 import HomePage from './components/Home';
 import Header from './layout/Header';
 import Footer from './layout/Footer';
@@ -15,6 +16,9 @@ import Chatbot from './components/ChatBot';
 import Contact from './pages/Contact';
 import Programs from './pages/Program';
 import ProtectedRoute from './components/Protected';
+import Donation from './pages/donation';
+import UserRequests from './VolunteeringRequest';
+import PickPage from './pick';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -23,6 +27,7 @@ function App() {
     <Router>
       <AuthProvider>
         <UserProvider>
+          <AcceptedRequestProvider>
           <ToastContainer />
           <Header />
           <Routes>
@@ -32,12 +37,16 @@ function App() {
             <Route path="/SignUp" element={<Signup />} />
             <Route path="/donation" element={<ProtectedRoute element={DonationOption} />} />
             <Route path="/about" element={<ProtectedRoute element={About} />} />
-            <Route path="/donate" element={<ProtectedRoute element={DonateFood} />} />
+            <Route path="/donates" element={<ProtectedRoute element={DonateFood} />} />
             <Route path="/programs" element={<ProtectedRoute element={Programs} />} />
             <Route path="/contact" element={<ProtectedRoute element={Contact} />} />
+            <Route path="/donate" element={<ProtectedRoute element={Donation}/>}/>
+            <Route path="/requests" element={<ProtectedRoute element={UserRequests}/>}/>
+            <Route path="/pick" element={<ProtectedRoute element={PickPage}/>}/>
           </Routes>
           <Chatbot />
           <Footer />
+          </AcceptedRequestProvider>
         </UserProvider>
       </AuthProvider>
     </Router>

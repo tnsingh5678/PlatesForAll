@@ -23,24 +23,24 @@ const Header = () => {
         <div>
             {/* Navbar */}
             {user && (
-                <nav className="bg-white shadow-md p-4 flex justify-between items-center fixed w-full top-0 z-10">
-                    <div className="">
-                        <img src="https://res.cloudinary.com/dsyr09l1n/image/upload/v1740598517/PlatesForAll_1_ew1lqi.png" alt="logo" height={110} width={110} />
+                <nav className="bg-white shadow-md p-2 flex justify-between items-center fixed w-full top-0 z-10">
+                    <div className="flex items-center">
+                        <img src="https://res.cloudinary.com/dsyr09l1n/image/upload/v1740598517/PlatesForAll_1_ew1lqi.png" alt="logo" height={80} width={80} />
                     </div>
-                    <div className="hidden md:flex space-x-6">
-                        <Link to="/" className="bg-blue-500 text-white px-4 py-2 rounded-lg hidden md:block hover:bg-yellow-600 transition duration-300">Home</Link>
-                        <Link to="/about" className="bg-blue-500 text-white px-4 py-2 rounded-lg hidden md:block hover:bg-yellow-600 transition duration-300">About</Link>
-                        <Link to="/programs" className="bg-blue-500 text-white px-4 py-2 rounded-lg hidden md:block hover:bg-yellow-600 transition duration-300">Programs</Link>
-                        <Link to="/contact" className="bg-blue-500 text-white px-4 py-2 rounded-lg hidden md:block hover:bg-yellow-600 transition duration-300">Contact</Link>
+                    <div className="hidden md:flex space-x-4">
+                        <Link to="/" className="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600 transition duration-300">Home</Link>
+                        <Link to="/about" className="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600 transition duration-300">About</Link>
+                        <Link to="/programs" className="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600 transition duration-300">Programs</Link>
+                        <Link to="/contact" className="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600 transition duration-300">Contact</Link>
                     </div>
-                    <div className="flex items-center space-x-6">
-                    <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hidden md:block hover:bg-yellow-600 transition duration-300">
-                        Donate Now
-                    </button>
-                    <button className="md:hidden text-2xl" onClick={() => setIsOpen(!isOpen)}>
-                        ☰
-                    </button>
-                    <button className="bg-red-600 m-2 p-2 border rounded-lg" onClick={logoutHandler}>Logout</button>
+                    <div className="flex items-center space-x-4">
+                        <Link to="/donate" className="bg-yellow-500 text-white px-4 py-2 rounded-lg hidden md:block hover:bg-yellow-600 transition duration-300">
+                            Donate Now
+                        </Link>
+                        <button className="md:hidden text-2xl" onClick={() => setIsOpen(!isOpen)}>
+                            ☰
+                        </button>
+                        <button className="bg-red-600 m-2 p-2 border rounded-lg" onClick={logoutHandler}>Logout</button>
                     </div>
                 </nav>
             )}
@@ -52,9 +52,9 @@ const Header = () => {
                     <Link to="/about" className="hover:text-yellow-500 py-2 w-full text-center border-b">About</Link>
                     <Link to="/programs" className="hover:text-yellow-500 py-2 w-full text-center border-b">Programs</Link>
                     <Link to="/contact" className="hover:text-yellow-500 py-2 w-full text-center border-b">Contact</Link>
-                    <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-yellow-600 transition duration-300">
+                    <Link to="/donate" className="bg-yellow-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-yellow-600 transition duration-300">
                         Donate Now
-                    </button>
+                    </Link>
                     <button className="bg-red-600 m-2 p-2 border rounded-lg" onClick={logoutHandler}>Logout</button>
                 </div>
             )}

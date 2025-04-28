@@ -59,10 +59,12 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
 };
 
 
-router.post('/donor',async(req,res) => {
+router.post('/donor/:DonorId',async(req,res) => {
     try {
-        const {food , category , address , DonorId } = req.body;
-        if(!food || !category || category.length === 0 || !address || !DonorId){
+        const {food , category , address } = req.body;
+        const {DonorId} = req.params;
+        console.log(DonorId);
+        if(!food || !category  || !address || !DonorId){
             return res.status(401).json({
                 message: "All fields are required"
             })
@@ -118,6 +120,8 @@ router.post('/find',async(req,res) => {
                 volunteers.push(user);
             }
         }
+        const donorId = donation.Donor;
+        
         if(volunteers.length === 0){
             return res.status(200).json({
                 message: "No volunteer in near by area available"
@@ -129,6 +133,8 @@ router.post('/find',async(req,res) => {
         for(let vol of volunteers){
             // console.log(vol.email)
             // sendEmail(vol.email);
+           // console.log(donor)
+            if(vol._id.toString() === donorId.toString()) continue;
             vol.requests.push(donation);
             vol.save();
         }
@@ -146,18 +152,18 @@ router.post('/find',async(req,res) => {
 })
 
 
-router.post('/accept', async(req,res) => {
+router.post('/accept/:volunteerId/:donationId', async(req,res) => {
     try {
         
-        const {donationId , volunteerId }= req.body;
-        console.log(volunteerId)
-        console.log(donationId)
+        const {volunteerId ,donationId }= req.params;
+        
 
         if(!volunteerId || !donationId){
             return res.status(401).json({
                 message: "VolunteerId or DonationId not found"
             })
         }
+        
         const volunteer = await User.findById(volunteerId);
         const donation = await Donation.findById(donationId);
         if(!volunteer || !donation){
@@ -165,16 +171,21 @@ router.post('/accept', async(req,res) => {
                 message: "Volunteer or Donation not found"
             })
         }
+       
         if(donation.Volunteer){
             return res.status(200).json({
-                message : "Item request already acceppted . Try next time . Thank you for connecting with us."
+                message : "Item request already accepted . Try next time . Thank you for connecting with us.",
+                donation
             })
         }
         donation.Volunteer = volunteer;
-        donation.save();
+        
         volunteer.volunteering.push(donation);
-        volunteer.save();
-        return res.status(200).json({
+        console.log(volunteerId)
+        console.log(donationId)
+        await Promise.all([donation.save(), volunteer.save()]);
+        
+        res.status(200).json({
             message: "Donation request accepted by the volunteer",
             donation
         })
@@ -185,8 +196,9 @@ router.post('/accept', async(req,res) => {
     }
 })
 
-router.post('/pick', async(req,res) => {
-    const {volunteerId , donationId , Lat , Lon} = req.body;
+router.post('/pick/:volunteerId/:donationId', async(req,res) => {
+    const {Lat , Lon} = req.body;
+    const {volunteerId , donationId} = req.params;
     try {
         if(!volunteerId || !donationId){
             return res.status(400).json({
@@ -211,7 +223,7 @@ router.post('/pick', async(req,res) => {
         console.log(donorLon)
         console.log(Lat)
         console.log(Lon)
-        if(donorLat !== Lat || donorLon !== Lon){
+        if(donorLat.toString() !== Lat.toString() || donorLon.toString() !== Lon.toString()){
             return res.status(400).json({
                 message : "Location not matched with the location of donor"
             })
@@ -227,14 +239,15 @@ router.post('/pick', async(req,res) => {
     }
 })
 
-router.post('/drop', async (req,res) =>{
+router.post('/drop/:donationId', async (req,res) =>{
     try {
         
-        const {Lon , Lat , donationId} = req.body;
+        const {Lon , Lat } = req.body;
+        const {donationId} = req.params;
         const donation = await Donation.findById(donationId);
         const destinationLon = donation.Longitude;
         const destinationLat = donation.Latitude;
-        if(Lon !== destinationLon || Lat !== destinationLat){
+        if(Lon.toString() !== destinationLon.toString() || Lat.toString() !== destinationLat.toString()){
             return res.status(201).json({
                 message: "Item not found at location there might be some problem"
             })

@@ -1,5 +1,6 @@
 import express from "express"
 import User from "../model/User.models.js"
+import Donation from "../model/Donation.models.js";
 
 const router = express.Router();
 
@@ -70,9 +71,14 @@ router.get('/findRequests/:userId',async (req,res) => {
             })
         }
         const requests = user.requests;
+        const Request = [];
+        for(let i=0;i<requests.length;i++){
+            const donation = await Donation.findById(requests[i]);
+            Request.push(donation);
+        }
         return res.status(200).json({
             message : "User volunteering requests fetched successfully",
-            requests
+            Request
         })
     } catch (error) {
         res.status(500).json({
@@ -80,5 +86,7 @@ router.get('/findRequests/:userId',async (req,res) => {
         })
     }
 })
+
+
 
 export default router;
