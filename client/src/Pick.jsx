@@ -2,12 +2,15 @@ import React, { useState, useEffect , useContext} from 'react';
 import axios from 'axios';
 import { UserContext } from './context/UserContext';
 import { AcceptedRequestContext } from './context/AcceptedRequestContext';
+import { LocationContext} from './context/LocationContext';
 
 const PickDonation = ({ volunteerId, donationId }) => {
     const [lat, setLat] = useState('');
     const [lon, setLon] = useState('');
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
+    const {coords , setCoords} = useContext(LocationContext);
+    console.log(coords[1]);
 
     const { acceptedRequest, setAcceptedRequest } = useContext(AcceptedRequestContext);
  

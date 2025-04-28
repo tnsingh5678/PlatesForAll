@@ -1,12 +1,16 @@
 import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../context/UserContext";
+import { LocationContext} from "../context/LocationContext"
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const Donation = () => {
   const [food, setFood] = useState("");
   const [category, setCategory] = useState([]);
   const [address, setAddress] = useState("");
   const [donorId, setDonorId] = useState("");
+
+  const {coords} = useContext(LocationContext);
 
   const {user} = useContext(UserContext);
 
@@ -32,11 +36,18 @@ const Donation = () => {
       
 
       const data = await response.json();
+      console.log(data.donation._id);
 
       if (response.ok) {
         
         console.log("Donation submitted:", data);
         toast.success("You have succesfully donated food");
+        const res = await axios.post('http://localhost:4000/donation/find',{
+          latitude : coords[0].toString(),
+          longitude : coords[1].toString(),
+          DonationId : data.donation._id
+        })
+        console.log(res.data)
         // setFood("");
         // setAddress("");
         // setCategory();

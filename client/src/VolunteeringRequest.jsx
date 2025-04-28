@@ -31,6 +31,7 @@ const UserRequests = () => {
         });
 
         if (response.data?.Request) {
+          console.log(response.data.Request)
           setRequests(response.data.Request);
         } else {
           setError("No requests found.");

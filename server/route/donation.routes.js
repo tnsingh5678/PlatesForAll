@@ -109,16 +109,32 @@ router.post('/find',async(req,res) => {
         }
         const donation = await Donation.findById(DonationId);
         const volunteers = [];
+        const users = await User.find();
         // want to go into user db and find all users who have distance of less than 5km into volunteers find using latitude , longtude
         // send pick request to all of them 
         // who ever first select will pick the donation
         // there is a 30 min to pick the donation else donation rejected
-        const users = await User.find();
+        // Use geoNear for more efficient geospatial search
+        console.log("before")
+        // const users = await User.aggregate([
+        //     {
+        //         $geoNear: {
+        //             near: { type: "Point", coordinates: [Number(longitude), Number(latitude)] },
+        //             distanceField: "dist.calculated",
+        //             maxDistance: 5000, // 5 km radius
+        //             spherical: true,
+        //         }
+        //     }
+        // ]);
+        console.log("after")
         for(let user of users){
-            let distance = calculateDistance(latitude , longitude , user.latitude , user.longitude);
+            let distance = calculateDistance(Number(latitude) , Number(longitude) , Number(user.latitude) , Number(user.longitude));
             if(distance < 5){
                 volunteers.push(user);
+                user.requests.push(donation);
+                await user.save();
             }
+            //volunteers.push(user);
         }
         const donorId = donation.Donor;
         
