@@ -1,8 +1,8 @@
 import { useContext , useEffect} from "react";
 import { VolunteerContext } from "../context/VolunteerContext";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet"; // Import Leaflet
-import "leaflet/dist/leaflet.css"; // Import Leaflet styles
+import L from "leaflet"; 
+import "leaflet/dist/leaflet.css"; 
 
 export default function VolunteeringLocationPage() {
   const { volunteers } = useContext(VolunteerContext);
@@ -11,7 +11,7 @@ export default function VolunteeringLocationPage() {
   }, []);
 
   // Default center of the map (can be adjusted based on the first volunteer or some other logic)
-  const defaultCenter = [51.505, -0.09]; // Example: Default center (London)
+  const defaultCenter = [31.505, 76.787]; 
 
   return (
     <div style={{ height: "100vh" }}>
@@ -39,11 +39,9 @@ export default function VolunteeringLocationPage() {
           >
             {/* Popup showing volunteer details */}
             <Popup>
-              <strong>{volunteer.name}</strong>
-              <br />
-              {volunteer.email}
-              <br />
-              Location: {volunteer.latitude}, {volunteer.longitude}
+              <strong>{volunteer.userName}</strong>
+              <p>{volunteer.username}</p>
+              Location: {volunteer.lat}, {volunteer.lng}
             </Popup>
           </Marker>
         ))}

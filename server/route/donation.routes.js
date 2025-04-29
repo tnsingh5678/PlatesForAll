@@ -130,7 +130,7 @@ router.post('/find',async(req,res) => {
         const Locations = [];
         for(let user of users){
             let distance = calculateDistance(Number(latitude) , Number(longitude) , Number(user.latitude) , Number(user.longitude));
-            if(distance < 5){
+            if(distance < 5 && user._id.toString() !== donation.Donor._id.toString()){
                 volunteers.push(user);
                 user.requests.push(donation);
                 Locations.push({lat : user.latitude,lng : user.longitude, userName : user.username});
@@ -148,14 +148,14 @@ router.post('/find',async(req,res) => {
         // send notification to all volunteers
         // console.log(process.env.email);
         // console.log(process.env.password)
-        for(let vol of volunteers){
-            // console.log(vol.email)
-            // sendEmail(vol.email);
-           // console.log(donor)
-            if(vol._id.toString() === donorId.toString()) continue;
-            vol.requests.push(donation);
-            vol.save();
-        }
+        // for(let vol of volunteers){
+        //     // console.log(vol.email)
+        //     // sendEmail(vol.email);
+        //    // console.log(donor)
+        //     if(vol._id.toString() === donorId.toString()) continue;
+        //     vol.requests.push(donation);
+        //     vol.save();
+        // }
         const expirationTime = Date.now() + 30 * 60 * 1000;
         res.status(200).json({
             message : "Message sent to volunteers",

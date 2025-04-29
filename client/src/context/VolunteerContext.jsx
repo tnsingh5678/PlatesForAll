@@ -1,20 +1,20 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useEffect, useState } from 'react';
 
-export const VolunteerContext = createContext();
+const VolunteerContext = createContext();
 
-export const VolunteerProvider = ({ children }) => {
-  const [volunteers, setVolunteers] = useState(() => {
-    const saved = localStorage.getItem('volunteers');
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  useEffect(() => {
-    localStorage.setItem('volunteers', JSON.stringify(volunteers));
-  }, [volunteers]);
+const VolunteerProvider = ({ children }) => {
+  const [volunteers, setVolunteers] = useState([]);
+  useEffect(()=>{
+    console.log(volunteers)
+  },[volunteers])
 
   return (
+    <>
     <VolunteerContext.Provider value={{ volunteers, setVolunteers }}>
       {children}
     </VolunteerContext.Provider>
+    </>
   );
 };
+
+export { VolunteerContext, VolunteerProvider };

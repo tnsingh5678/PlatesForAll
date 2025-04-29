@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { UserContext } from '../context/UserContext';
 import { VolunteerContext } from '../context/VolunteerContext';
 import { LocationContext } from '../context/LocationContext';
+import { useNavigate } from 'react-router-dom';
 
 // Fix Leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -51,6 +52,7 @@ const DonationWithLocation = () => {
   const { coords} = useContext(LocationContext)
 
   const {volunteers , setVolunteers} = useContext(VolunteerContext)
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log("Current volunteers in Component:", volunteers);
@@ -94,11 +96,13 @@ const DonationWithLocation = () => {
         })
         // data is consoled correctly but why Volunteer not setting
         console.log("data",res.data);
-        localStorage.setItem('volunteers', JSON.stringify(res.data.Locations));
+        
         setVolunteers(res.data.Locations);
         console.log("Nearby volunteers:", res.data.Locations);
-        if (res.data && res.data.Locations) {
+        navigate('/volunteer')
+        if (res.data.Locations) {
             setVolunteers(res.data.Locations);
+           
               // Update context state with the volunteers' data
             
         }else {
