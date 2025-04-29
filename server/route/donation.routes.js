@@ -61,10 +61,10 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
 
 router.post('/donor/:DonorId',async(req,res) => {
     try {
-        const {food , category , address } = req.body;
+        const {food , category , address , coordinates} = req.body;
         const {DonorId} = req.params;
         console.log(DonorId);
-        if(!food || !category  || !address || !DonorId){
+        if(!food || !category  || !address || !DonorId || !coordinates){
             return res.status(401).json({
                 message: "All fields are required"
             })
@@ -80,8 +80,8 @@ router.post('/donor/:DonorId',async(req,res) => {
             Address:address,
             Donor: Donor,
             Volunteer: null,
-            Latitude: 0,
-            Longitude: 0,
+            Latitude: coordinates.lat,
+            Longitude: coordinates.lng,
             Status: false
         });
         donation.save();
@@ -126,12 +126,14 @@ router.post('/find',async(req,res) => {
         //         }
         //     }
         // ]);
-        console.log("after")
+        console.log("after");
+        const Locations = [];
         for(let user of users){
             let distance = calculateDistance(Number(latitude) , Number(longitude) , Number(user.latitude) , Number(user.longitude));
             if(distance < 5){
                 volunteers.push(user);
                 user.requests.push(donation);
+                Locations.push({lat : user.latitude,lng : user.longitude, userName : user.username});
                 await user.save();
             }
             //volunteers.push(user);
@@ -157,7 +159,8 @@ router.post('/find',async(req,res) => {
         const expirationTime = Date.now() + 30 * 60 * 1000;
         res.status(200).json({
             message : "Message sent to volunteers",
-            volunteers
+            volunteers,
+            Locations
         })
         // send message to all volunteers
     } catch (error) {

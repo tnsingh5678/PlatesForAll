@@ -23,7 +23,11 @@ import Map from './components/Map';
 import { LocationProvider } from './context/LocationContext';
 import PathFinderMap from './components/PickComponent';
 import PathFinderMapDrop from './components/DropComponent';
-
+import DropDonation from './DropDonation';
+import DonationPointsPage from './pages/DonationPoints';
+import DonationWithLocation from './pages/DonationWithLocation';
+import VolunteerLocationsPage from './pages/VolunteerLocationPage';
+import { VolunteerProvider } from './context/VolunteerContext';
 function App() {
   const [count, setCount] = useState(0);
 
@@ -33,6 +37,7 @@ function App() {
         <UserProvider>
           <LocationProvider>
           <AcceptedRequestProvider>
+            <VolunteerProvider>
           <ToastContainer />
           <Header />
           <Routes>
@@ -51,9 +56,13 @@ function App() {
             <Route path="/map" element={<ProtectedRoute element={Map}/>}/>
             <Route path="/mapc" element={<ProtectedRoute element={PathFinderMap}/>}/>
             <Route path="/mapd" element={<ProtectedRoute element={PathFinderMapDrop}/>}/>
+            <Route path="/drop" element={<ProtectedRoute element={DropDonation}/>}/>
+            <Route path="/points" element={<ProtectedRoute element={DonationWithLocation}/>}/>
+            <Route path="/volunteer" element={<ProtectedRoute element={VolunteerLocationsPage}/>}/>
           </Routes>
           <Chatbot />
           <Footer />
+          </VolunteerProvider>
           </AcceptedRequestProvider>
           </LocationProvider>
         </UserProvider>

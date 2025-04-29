@@ -2,49 +2,55 @@ import React, { useState, useEffect , useContext} from 'react';
 import axios from 'axios';
 import { UserContext } from './context/UserContext';
 import { AcceptedRequestContext } from './context/AcceptedRequestContext';
-import { LocationContext} from './context/LocationContext';
+import { LocationContext } from './context/LocationContext';
+import { useNavigate} from "react-router-dom"
+
 
 const PickDonation = ({ volunteerId, donationId }) => {
-    const [lat, setLat] = useState('');
-    const [lon, setLon] = useState('');
+    // const [lat, setLat] = useState('');
+    // const [lon, setLon] = useState('');
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
-    const {coords , setCoords} = useContext(LocationContext);
-    console.log(coords[1]);
+    const {lat , lon} = useContext(LocationContext)
+
+    
+    
 
     const { acceptedRequest, setAcceptedRequest } = useContext(AcceptedRequestContext);
  
     const {user} = useContext(UserContext);
-    console.log(acceptedRequest)
+    console.log(acceptedRequest);
+
+    const navigate = useNavigate();
 
     // Function to get the current position
-    const getCurrentPosition = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    setLat(latitude);
-                    setLon(longitude);
-                },
-                (error) => {
-                    setMessage('Error retrieving location');
-                    console.error(error);
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 5000,
-                    maximumAge: 0,
-                }
-            );
-        } else {
-            setMessage('Geolocation is not supported by this browser.');
-        }
-    };
+    // const getCurrentPosition = () => {
+    //     if (navigator.geolocation) {
+    //         navigator.geolocation.getCurrentPosition(
+    //             (position) => {
+    //                 const { latitude, longitude } = position.coords;
+    //                 setLat(latitude);
+    //                 setLon(longitude);
+    //             },
+    //             (error) => {
+    //                 setMessage('Error retrieving location');
+    //                 console.error(error);
+    //             },
+    //             {
+    //                 enableHighAccuracy: true,
+    //                 timeout: 5000,
+    //                 maximumAge: 0,
+    //             }
+    //         );
+    //     } else {
+    //         setMessage('Geolocation is not supported by this browser.');
+    //     }
+    // };
 
-    // Use effect to get the current location when the component mounts
-    useEffect(() => {
-        getCurrentPosition();
-    }, []);
+    // // Use effect to get the current location when the component mounts
+    // useEffect(() => {
+    //     getCurrentPosition();
+    // }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -57,6 +63,7 @@ const PickDonation = ({ volunteerId, donationId }) => {
                 { Lat: lat, Lon: lon }
             );
             setMessage(response.data.message);
+            navigate('/mapd')
         } catch (error) {
             setMessage(error.response ? error.response.data.message : 'Error while picking the item');
         } finally {

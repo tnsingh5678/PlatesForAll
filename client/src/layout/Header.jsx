@@ -32,6 +32,8 @@ const Header = () => {
                         <Link to="/about" className="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600 transition duration-300">About</Link>
                         <Link to="/programs" className="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600 transition duration-300">Programs</Link>
                         <Link to="/contact" className="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600 transition duration-300">Contact</Link>
+                        <Link to="/pick" className="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600 transition duration-300">Pick</Link>
+                        <Link to="/drop" className="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600 transition duration-300">Drop</Link>
                     </div>
                     <div className="flex items-center space-x-4">
                         <Link to="/donate" className="bg-yellow-500 text-white px-4 py-2 rounded-lg hidden md:block hover:bg-yellow-600 transition duration-300">

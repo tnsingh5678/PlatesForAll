@@ -111,7 +111,7 @@ router.get('/volunteer/:userId', async (req, res) => {
         });
       }
      // console.log(user)
-      const request = user.requests[4];
+      const request = user.requests[user.requests.length - 1];
       if (!request) {
         return res.status(404).json({
           message: "No volunteering donation found for user",
@@ -162,7 +162,7 @@ router.get('/volunteer-drop/:userId', async (req, res) => {
         });
       }
      // console.log(user)
-      const volunteering = user.volunteering[1];
+      const volunteering = user.volunteering[user.volunteering.length - 1];
       if (!volunteering) {
         return res.status(404).json({
           message: "No volunteering donation found for user",

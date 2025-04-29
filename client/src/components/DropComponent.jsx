@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import { UserContext } from '../context/UserContext';
+import { LocationContext } from '../context/LocationContext';
 
 // Fix default marker icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -22,22 +23,25 @@ const Routing = ({ source, destination }) => {
   useEffect(() => {
     if (!map || !source || !destination) return;
 
-    // Remove existing route
+    // Remove existing route if any
     if (routingControlRef.current) {
       map.removeControl(routingControlRef.current);
     }
 
-    // Draw new route
+    // Create new route with navigation panel
     routingControlRef.current = L.Routing.control({
       waypoints: [
         L.latLng(source.lat, source.lng),
         L.latLng(destination.lat, destination.lng),
       ],
       routeWhileDragging: false,
-      show: false,
+      show: true, // 👈 show the navigation panel
       addWaypoints: false,
       draggableWaypoints: false,
       createMarker: () => null,
+      lineOptions: {
+        styles: [{ color: 'blue', weight: 5 }]
+      }
     }).addTo(map);
 
     return () => {
@@ -50,23 +54,38 @@ const Routing = ({ source, destination }) => {
   return null;
 };
 
+
 const PathFinderMapDrop = () => {
     const [source, setSource] = useState({ lat: 31.7686, lng: 76.57454 });
     const [destination, setDestination] = useState(null);
     const { user } = useContext(UserContext);
+
+    const { lat , lon} = useContext(LocationContext);
+
+    useEffect(() => {
+          if (lat && lon) {
+            setSource({ lat, lng: lon });
+          }
+    }, [lat, lon]);
   
     useEffect(() => {
       const fetchDestination = async () => {
         try {
           const response = await axios.get(`http://localhost:4000/location/volunteer-drop/${user.userId}`);
-          setDestination(response.data.destination);
-          console.log("Destination:", response.data.destination);
+          const data = response.data.destination;
+          if (data && data.lat && data.lng) {
+            setDestination({ lat: data.lat, lng: data.lng });
+          } else {
+            console.warn("Invalid destination data:", data);
+          }
         } catch (error) {
           console.error("Failed to fetch destination:", error);
         }
       };
-      fetchDestination();
-    }, [user.userId]);
+      if (user?.userId) {
+        fetchDestination();
+      }
+    }, [user?.userId]);
   
     useEffect(() => {
       const updateLocation = () => {
@@ -89,29 +108,31 @@ const PathFinderMapDrop = () => {
     }, []);
   
     return (
-      <MapContainer
-        center={[source.lat, source.lng]}
-        zoom={10}
-        style={{ height: '80vh', width: '100%' }}
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution="&copy; OpenStreetMap contributors"
-        />
-  
-        <Marker position={[source.lat, source.lng]}>
-          <Popup>Source Location (Updated Every 30s)</Popup>
-        </Marker>
-  
-        {destination && (
-          <>
-            <Marker position={[destination.lat, destination.lng]}>
-              <Popup>Destination Location</Popup>
-            </Marker>
-            <Routing source={source} destination={destination} />
-          </>
-        )}
-      </MapContainer>
+      <div className='pt-20'>
+        <MapContainer
+                center={[source.lat, source.lng]}
+                zoom={10}
+                style={{ height: '80vh', width: '100%' }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution="&copy; OpenStreetMap contributors"
+                />
+          
+                <Marker position={[source.lat, source.lng]}>
+                  <Popup>Source Location (Updated Every 30s)</Popup>
+                </Marker>
+          
+                {destination && (
+                  <>
+                    <Marker position={[destination.lat, destination.lng]}>
+                      <Popup>Destination Location</Popup>
+                    </Marker>
+                    <Routing source={source} destination={destination} />
+                  </>
+                )}
+              </MapContainer>
+      </div>
     );
 };
   

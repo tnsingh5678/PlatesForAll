@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import { UserContext } from '../context/UserContext';
+import { LocationContext } from '../context/LocationContext';
 
 // Fix default marker icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -22,22 +23,25 @@ const Routing = ({ source, destination }) => {
   useEffect(() => {
     if (!map || !source || !destination) return;
 
-    // Remove existing route
+    // Remove existing route if any
     if (routingControlRef.current) {
       map.removeControl(routingControlRef.current);
     }
 
-    // Draw new route
+    // Create new route with navigation panel
     routingControlRef.current = L.Routing.control({
       waypoints: [
         L.latLng(source.lat, source.lng),
         L.latLng(destination.lat, destination.lng),
       ],
       routeWhileDragging: false,
-      show: false,
+      show: true, // 👈 show the navigation panel
       addWaypoints: false,
       draggableWaypoints: false,
       createMarker: () => null,
+      lineOptions: {
+        styles: [{ color: 'blue', weight: 5 }]
+      }
     }).addTo(map);
 
     return () => {
@@ -50,10 +54,18 @@ const Routing = ({ source, destination }) => {
   return null;
 };
 
+
 const PathFinderMap = () => {
     const [source, setSource] = useState({ lat: 31.7686, lng: 76.57454 });
     const [destination, setDestination] = useState(null);
     const { user } = useContext(UserContext);
+    const { lat , lon} = useContext(LocationContext);
+
+    useEffect(() => {
+      if (lat && lon) {
+        setSource({ lat, lng: lon });
+      }
+    }, [lat, lon]);
   
     useEffect(() => {
       const fetchDestination = async () => {
@@ -89,7 +101,8 @@ const PathFinderMap = () => {
     }, []);
   
     return (
-      <MapContainer
+      <div className='pt-20'>
+        <MapContainer
         center={[source.lat, source.lng]}
         zoom={10}
         style={{ height: '80vh', width: '100%' }}
@@ -112,6 +125,7 @@ const PathFinderMap = () => {
           </>
         )}
       </MapContainer>
+      </div>
     );
 };
   
