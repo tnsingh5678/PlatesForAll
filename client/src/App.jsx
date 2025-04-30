@@ -50,14 +50,14 @@ function App() {
             <Route path="/donates" element={<ProtectedRoute element={DonateFood} />} />
             <Route path="/programs" element={<ProtectedRoute element={Programs} />} />
             <Route path="/contact" element={<ProtectedRoute element={Contact} />} />
-            <Route path="/donate" element={<ProtectedRoute element={Donation}/>}/>
+            <Route path="/donat" element={<ProtectedRoute element={Donation}/>}/>
             <Route path="/requests" element={<ProtectedRoute element={UserRequests}/>}/>
             <Route path="/pick" element={<ProtectedRoute element={PickPage}/>}/>
             <Route path="/map" element={<ProtectedRoute element={Map}/>}/>
             <Route path="/mapc" element={<ProtectedRoute element={PathFinderMap}/>}/>
             <Route path="/mapd" element={<ProtectedRoute element={PathFinderMapDrop}/>}/>
             <Route path="/drop" element={<ProtectedRoute element={DropDonation}/>}/>
-            <Route path="/points" element={<ProtectedRoute element={DonationWithLocation}/>}/>
+            <Route path="/donate" element={<ProtectedRoute element={DonationWithLocation}/>}/>
             <Route path="/volunteer" element={<ProtectedRoute element={VolunteerLocationsPage}/>}/>
           </Routes>
           <Chatbot />

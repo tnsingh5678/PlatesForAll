@@ -45,18 +45,23 @@ const sendEmail = async (email) =>{
 
 const router = express.Router();
 
-const calculateDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // Radius of Earth in kilometers
-    const dLat = (lat2 - lat1) * (Math.PI / 180);
-    const dLon = (lon2 - lon1) * (Math.PI / 180);
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const toRad = (value) => (value * Math.PI) / 180;
+
+    const R = 6371000; // Earth's radius in meters
+    const φ1 = toRad(lat1);
+    const φ2 = toRad(lat2);
+    const Δφ = toRad(lat2 - lat1);
+    const Δλ = toRad(lon2 - lon1);
+
     const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(lat1 * (Math.PI / 180)) *
-            Math.cos(lat2 * (Math.PI / 180)) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        Math.sin(Δφ / 2) ** 2 +
+        Math.cos(φ1) * Math.cos(φ2) *
+        Math.sin(Δλ / 2) ** 2;
+
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in kilometers
-};
+    return R * c; // in meters
+}
 
 
 router.post('/donor/:DonorId',async(req,res) => {
@@ -130,7 +135,7 @@ router.post('/find',async(req,res) => {
         const Locations = [];
         for(let user of users){
             let distance = calculateDistance(Number(latitude) , Number(longitude) , Number(user.latitude) , Number(user.longitude));
-            if(distance < 5 && user._id.toString() !== donation.Donor._id.toString()){
+            if(distance < 5000 && user._id.toString() !== donation.Donor._id.toString()){
                 volunteers.push(user);
                 user.requests.push(donation);
                 Locations.push({lat : user.latitude,lng : user.longitude, userName : user.username});
@@ -197,9 +202,17 @@ router.post('/accept/:volunteerId/:donationId', async(req,res) => {
                 donation
             })
         }
+        console.log("hello")
         donation.Volunteer = volunteer;
         
         volunteer.volunteering.push(donation);
+        
+        volunteer.requests = volunteer.requests.filter(
+            reqId => reqId._id.toString() !== donation._id.toString()
+        );
+        
+        
+        // await delete user.request(donation)
         console.log(volunteerId)
         console.log(donationId)
         await Promise.all([donation.save(), volunteer.save()]);
@@ -215,72 +228,99 @@ router.post('/accept/:volunteerId/:donationId', async(req,res) => {
     }
 })
 
-router.post('/pick/:volunteerId/:donationId', async(req,res) => {
-    const {Lat , Lon} = req.body;
-    const {volunteerId , donationId} = req.params;
+router.post('/pick/:volunteerId/:donationId', async (req, res) => {
+    const { Lat, Lon } = req.body;
+    const { volunteerId, donationId } = req.params;
+
     try {
-        if(!volunteerId || !donationId){
-            return res.status(400).json({
-                message: "Volunteer or Donation Id not found"
-            })
+        if (!volunteerId || !donationId) {
+            return res.status(400).json({ message: "Volunteer or Donation Id not found" });
         }
+
         const donation = await Donation.findById(donationId);
         const volunteer = await User.findById(volunteerId);
-        //console.log(donation.Volunteer)
-        //console.log(volunteer._id)
-        if(donation.Volunteer.toString() !== volunteer._id.toString()){
-            return res.status(200).json({
-                message: "Volunteer not matched."
-            })
-        }
-        const donorId = donation.Donor;
-        const donor = await User.findById(donorId);
-        console.log(donor)
-        const donorLat = donor.latitude;
-        const donorLon = donor.longitude;
-        console.log(donorLat)
-        console.log(donorLon)
-        console.log(Lat)
-        console.log(Lon)
-        if(donorLat.toString() !== Lat.toString() || donorLon.toString() !== Lon.toString()){
-            return res.status(400).json({
-                message : "Location not matched with the location of donor"
-            })
-        }
-        return res.status(200).json({
-            message : "Item picked successfully",
-            donation
-        })
-    } catch (error) {
-        res.status(500).json({
-            message : "Error while picking the item"
-        })
-    }
-})
 
-router.post('/drop/:donationId', async (req,res) =>{
-    try {
-        
-        const {Lon , Lat } = req.body;
-        const {donationId} = req.params;
-        const donation = await Donation.findById(donationId);
-        const destinationLon = donation.Longitude;
-        const destinationLat = donation.Latitude;
-        if(Lon.toString() !== destinationLon.toString() || Lat.toString() !== destinationLat.toString()){
-            return res.status(201).json({
-                message: "Item not found at location there might be some problem"
-            })
+        if (!donation || !volunteer) {
+            return res.status(404).json({ message: "Donation or Volunteer not found" });
         }
-    
-        res.status(200).json({
-            message: "Donation successfully delievered to location"
-        })
+
+        if (donation.Volunteer.toString() !== volunteer._id.toString()) {
+            return res.status(403).json({ message: "Volunteer not matched." });
+        }
+
+        const donor = await User.findById(donation.Donor);
+        if (!donor) {
+            return res.status(404).json({ message: "Donor not found" });
+        }
+
+        const distance = calculateDistance(
+            parseFloat(Lat),
+            parseFloat(Lon),
+            parseFloat(donor.latitude),
+            parseFloat(donor.longitude)
+        );
+
+        if (distance > 100) {
+            return res.status(400).json({
+                message: `Location mismatch. You must be within 100 meters of the donor. Your distance: ${Math.round(distance)}m`
+            });
+        }
+
+        return res.status(200).json({
+            message: "Item picked successfully",
+            donation
+        });
+
     } catch (error) {
-        res.status(500).json({
-            message: "Error from volunteer side while delievering"
-        })
+        console.error(error);
+        res.status(500).json({ message: "Error while picking the item" });
     }
-})
+});
+
+router.post('/drop/:donationId', async (req, res) => {
+    try {
+        const { Lon, Lat } = req.body;
+        const { donationId } = req.params;
+
+        const donation = await Donation.findById(donationId);
+        if (!donation) {
+            return res.status(404).json({ message: "Donation not found" });
+        }
+        // if(donation.Status){
+        //     return res.status(201).json({ message : "Item already delievered"})
+        // }
+
+        const destinationLat = parseFloat(donation.Latitude);
+        const destinationLon = parseFloat(donation.Longitude);
+        const userLat = parseFloat(Lat);
+        const userLon = parseFloat(Lon);
+        console.log(destinationLat,destinationLon,userLat,userLon)
+        if ([destinationLat, destinationLon, userLat, userLon].some(coord => isNaN(coord))) {
+            return res.status(400).json({ message: "Invalid coordinates received" });
+        }
+
+        const distance = calculateDistance(userLat, userLon, destinationLat, destinationLon);
+
+        if (distance > 100) {
+            return res.status(400).json({
+                message: `Drop location mismatch. You are ${Math.round(distance)} meters away from the destination.`
+            });
+        }
+        console.log(distance)
+        // Optionally, you can mark the donation as delivered here
+        donation.Status = true;
+        await donation.save();
+
+        res.status(200).json({
+            message: "Donation successfully delivered to location"
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Error from volunteer side while delivering"
+        });
+    }
+});
 
 router.get('/getDonor:donationId' , async (req,res) => {
     const {donationId} = req.params;

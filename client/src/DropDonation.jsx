@@ -8,13 +8,11 @@ import { toast } from 'react-toastify';
 const DropDonation = () => {
     const { lat, lon } = useContext(LocationContext);
     const { acceptedRequest } = useContext(AcceptedRequestContext);
-    const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setMessage('');
         setLoading(true);
 
         try {
@@ -23,59 +21,35 @@ const DropDonation = () => {
                 Lon: lon,
             });
 
-            setMessage(response.data.message);
-
             if (response.status === 200) {
-                toast.success("Item delievered successfully")
+                toast.success("Donation successfully delivered!");
+                setTimeout(() => navigate('/thankyou'), 1500); // optional redirect
+            } else {
+                toast.warning(response.data.message);
             }
         } catch (error) {
-            setMessage(error.response?.data?.message || 'Error while dropping the donation');
+            toast.error(error.response?.data?.message || 'Error while dropping the donation');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="flex justify-center items-center h-screen bg-gray-100">
-            <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-                <h2 className="text-2xl font-bold mb-4 text-center">Drop Donation</h2>
+        <div className="flex justify-center items-center h-screen bg-gradient-to-br from-green-100 via-white to-green-200 pt-20">
+            <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg text-center space-y-6">
+                <h2 className="text-3xl font-bold text-green-700">Confirm Drop</h2>
+                <p className="text-gray-600">Tap the button below to confirm delivery of the donation using your current location.</p>
 
                 <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label htmlFor="lat" className="block text-sm font-medium text-gray-700">Latitude</label>
-                        <input
-                            type="number"
-                            id="lat"
-                            value={lat}
-                            readOnly
-                            className="w-full mt-1 p-2 border border-gray-300 rounded-md bg-gray-100"
-                        />
-                    </div>
-
-                    <div className="mb-4">
-                        <label htmlFor="lon" className="block text-sm font-medium text-gray-700">Longitude</label>
-                        <input
-                            type="number"
-                            id="lon"
-                            value={lon}
-                            readOnly
-                            className="w-full mt-1 p-2 border border-gray-300 rounded-md bg-gray-100"
-                        />
-                    </div>
-
                     <button
                         type="submit"
-                        className={`w-full py-2 px-4 text-white font-semibold rounded-md ${loading ? 'bg-gray-500' : 'bg-green-500 hover:bg-green-600'}`}
                         disabled={loading}
+                        className={`w-full py-3 px-4 text-white font-semibold rounded-lg transition ${
+                            loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
+                        }`}
                     >
-                        {loading ? 'Processing...' : 'Drop Donation'}
+                        {loading ? 'Processing...' : 'Confirm & Drop Donation'}
                     </button>
-
-                    {message && (
-                        <div className={`mt-4 p-2 text-center ${message.includes('successfully') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                            {message}
-                        </div>
-                    )}
                 </form>
             </div>
         </div>

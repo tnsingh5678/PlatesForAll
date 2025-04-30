@@ -14,7 +14,7 @@ export default function VolunteeringLocationPage() {
   const defaultCenter = [31.505, 76.787]; 
 
   return (
-    <div style={{ height: "100vh" }}>
+    <div  className="h-screen pt-20">
       <MapContainer
         center={defaultCenter} // Initial center of the map
         zoom={13} // Initial zoom level

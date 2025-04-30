@@ -58,7 +58,7 @@ const UserRequests = () => {
 
       if (response.data?.donation?._id) {
         setAcceptedRequest(response.data.donation._id);
-        navigate('/pick');
+        navigate('/mapc');
       } else {
         setError("Failed to accept the request.");
       }
