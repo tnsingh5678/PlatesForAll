@@ -10,7 +10,9 @@ const LocationProvider = ({ children }) => {
     const [lon, setLon] = useState(null);
     const [message, setMessage] = useState('');
     const { user } = useContext(UserContext);
-    const { userId } = user;
+    
+    // Check if user is loaded and has userId
+    const userId = user ? user.userId : null;
 
     // Function to get the user's current position
     const getCurrentPosition = () => {
@@ -37,14 +39,15 @@ const LocationProvider = ({ children }) => {
         }
     };
 
-    // Effect hook that runs once to get the current position
+    // Effect hook that runs once to get the current position when user is loaded
     useEffect(() => {
-        getCurrentPosition();  // Get the user's position when the component mounts
-    }, []); // Empty dependency array ensures it runs only once
+        if (userId) {
+            getCurrentPosition();  // Get the user's position when the component mounts and userId is available
+        }
+    }, [userId]); // Dependency on userId ensures location is fetched once user is available
 
     // Effect hook to send the location to the server after lat/lon are available
     useEffect(() => {
-        // Make sure lat, lon, and userId are available before sending the location
         if (lat && lon && userId) {
             const sendLocation = async () => {
                 try {

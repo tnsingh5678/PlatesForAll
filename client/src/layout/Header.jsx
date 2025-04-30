@@ -11,6 +11,8 @@ const Header = () => {
     const navigate = useNavigate();
     const { user, setUser } = useContext(UserContext);
 
+    
+
     const logoutHandler = () => {
         localStorage.removeItem('token');
         delete axios.defaults.headers.common['Authorization'];
