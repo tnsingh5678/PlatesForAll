@@ -9,9 +9,11 @@ const UserRequests = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const { user } = useContext(UserContext);
+  const { user , setUser } = useContext(UserContext);
   const { acceptedRequest, setAcceptedRequest } = useContext(AcceptedRequestContext);
   const navigate = useNavigate();
+
+ 
 
   // Fetch requests from the backend
   useEffect(() => {

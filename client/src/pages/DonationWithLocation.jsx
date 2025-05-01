@@ -133,7 +133,9 @@ const DonationWithLocation = () => {
 
   return (
     <div className="pt-20 px-6">
-      <h1 className="text-3xl font-bold text-center mb-6 text-indigo-700">Donate Food & Select Drop-off Point</h1>
+      <h1 className="text-3xl font-bold text-center mb-6 text-indigo-700">
+        Donate Food & Select Drop-off Point
+      </h1>
 
       {/* Donation Form */}
       <div className="bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto mb-10">
@@ -141,7 +143,9 @@ const DonationWithLocation = () => {
           <input type="hidden" value={donorId} />
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Type of Food</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Type of Food
+            </label>
             <input
               type="text"
               value={food}
@@ -153,19 +157,24 @@ const DonationWithLocation = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Food Category</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Food Category
+            </label>
             <select
-              multiple
               value={category}
-              onChange={(e) => setCategory([...e.target.selectedOptions].map(opt => opt.value))}
+              onChange={(e) => setCategory(e.target.value)}
               className="w-full mt-1 p-2 border rounded"
+              required
             >
+              <option value="">Select Category</option>
               <option value="Vegetables">Vegetables</option>
               <option value="Fruits">Fruits</option>
               <option value="Grains">Grains</option>
               <option value="Protein">Protein</option>
               <option value="Dairy">Dairy</option>
+              <option value="Others">Others</option>
             </select>
+            <small className="text-gray-500">Please select one category</small>
           </div>
 
           <button
@@ -176,13 +185,46 @@ const DonationWithLocation = () => {
           </button>
         </form>
       </div>
+       
 
-      {/* Drop-off Map & List */}
-      <div className="mb-16">
-        <MapContainer center={[31.4753, 76.2711]} zoom={11} style={{ height: '60vh', width: '100%' }}>
+      <h1 className="text-center font-bold text-[50px]">Donation Centers</h1> 
+
+      {/* Drop-off Point Selection */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+        {donationPoints.map((point) => (
+          <div
+            key={point.id}
+            className={`p-4 rounded shadow border ${
+              selectedPoint?.id === point.id
+                ? "border-indigo-600 bg-indigo-50"
+                : ""
+            }`}
+          >
+            <h3 className="font-semibold">{point.name}</h3>
+            <p className="text-sm">{point.address}</p>
+            <button
+              onClick={() => setSelectedPoint(point)}
+              className="mt-2 px-4 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Select This Point
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* Map Display */}
+      <div className="mb-16 mt-6">
+        <MapContainer
+          center={[31.4753, 76.2711]}
+          zoom={11}
+          style={{ height: "60vh", width: "100%" }}
+        >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {donationPoints.map((point) => (
-            <Marker key={point.id} position={[point.coordinates.lat, point.coordinates.lng]}>
+            <Marker
+              key={point.id}
+              position={[point.coordinates.lat, point.coordinates.lng]}
+            >
               <Popup>
                 <strong>{point.name}</strong>
                 <br />
@@ -191,26 +233,6 @@ const DonationWithLocation = () => {
             </Marker>
           ))}
         </MapContainer>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-          {donationPoints.map((point) => (
-            <div
-              key={point.id}
-              className={`p-4 rounded shadow border ${
-                selectedPoint?.id === point.id ? 'border-indigo-600 bg-indigo-50' : ''
-              }`}
-            >
-              <h3 className="font-semibold">{point.name}</h3>
-              <p className="text-sm">{point.address}</p>
-              <button
-                onClick={() => setSelectedPoint(point)}
-                className="mt-2 px-4 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                Select This Point
-              </button>
-            </div>
-          ))}
-        </div>
 
         {selectedPoint && (
           <div className="text-center mt-4 text-green-700 font-semibold">

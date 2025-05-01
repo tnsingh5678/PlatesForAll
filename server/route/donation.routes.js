@@ -188,14 +188,14 @@ router.post('/accept/:volunteerId/:donationId', async(req,res) => {
             })
         }
         
-        const volunteer = await User.findById(volunteerId);
+        const volunteer = await User.findById(volunteerId).populate('requests');
         const donation = await Donation.findById(donationId);
         if(!volunteer || !donation){
             return res.status(401).json({
                 message: "Volunteer or Donation not found"
             })
         }
-       
+        
         if(donation.Volunteer){
             return res.status(200).json({
                 message : "Item request already accepted . Try next time . Thank you for connecting with us.",
@@ -205,18 +205,17 @@ router.post('/accept/:volunteerId/:donationId', async(req,res) => {
         console.log("hello")
         donation.Volunteer = volunteer;
         
+        
         volunteer.volunteering.push(donation);
         
         volunteer.requests = volunteer.requests.filter(
-            reqId => reqId._id.toString() !== donation._id.toString()
+            id => id._id.toString() !== donation._id.toString()
         );
         
         
-        // await delete user.request(donation)
+        await Promise.all([donation.save(), volunteer.save()]);
         console.log(volunteerId)
         console.log(donationId)
-        await Promise.all([donation.save(), volunteer.save()]);
-        
         res.status(200).json({
             message: "Donation request accepted by the volunteer",
             donation

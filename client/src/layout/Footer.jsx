@@ -41,11 +41,11 @@ const Footer = () => {
             <div className="footer-section links">
               <h2 className="text-2xl font-semibold mb-4">Quick Links</h2>
               <ul className="space-y-2">
-                <li><a href="#home" className="hover:underline">Home</a></li>
-                <li><a href="#about" className="hover:underline">About Us</a></li>
-                <li><a href="#donate" className="hover:underline">Donate</a></li>
-                <li><a href="#volunteer" className="hover:underline">Volunteer</a></li>
-                <li><a href="#contact" className="hover:underline">Contact</a></li>
+                <li><a href="/" className="hover:underline">Home</a></li>
+                <li><a href="/about" className="hover:underline">About Us</a></li>
+                <li><a href="/donate" className="hover:underline">Donate</a></li>
+                <li><a href="/volunteer" className="hover:underline">Volunteer</a></li>
+                <li><a href="/contact" className="hover:underline">Contact</a></li>
               </ul>
             </div>
 

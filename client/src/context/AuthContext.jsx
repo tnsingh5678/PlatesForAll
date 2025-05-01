@@ -15,13 +15,13 @@ const AuthProvider = ({children})=>{
 
     },[])
 
-    const login = ()=>{
+    const login = async ()=>{
         localStorage.setItem('token',token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         setUser({token})
     }
 
-    const logout = ()=>{
+    const logout = async ()=>{
         localStorage.removeItem('token');
         delete axios.defaults.headers.common['Authorization'];
         setUser(null);

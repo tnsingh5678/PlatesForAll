@@ -15,7 +15,7 @@ const UserProvider = ({children})=>{
         }
     }
 
-    const getUser = ()=>{
+    const getUser = async ()=>{
         const token = localStorage.getItem('token');
         if(token){
             setUser(Decode(token));

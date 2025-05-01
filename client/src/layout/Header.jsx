@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -8,10 +8,18 @@ import { UserContext } from '../context/UserContext';
 
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const { user, setUser } = useContext(UserContext);
 
-    
+    useEffect(() => {
+        // Check if there is a token in localStorage
+        const token = localStorage.getItem('token');
+        if (token && !user) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            setUser({ token }); // Assuming the user object is just the token for now
+        }
+    }, [user, setUser]);
 
     const logoutHandler = () => {
         localStorage.removeItem('token');
@@ -22,7 +30,7 @@ const Header = () => {
     };
 
     return (
-        <div className='mb-[100px]'>
+        <div className='mb-[140px]'>
             {/* Navbar */}
             {user && (
                 <nav className="bg-white mb-12 shadow-md p-4 flex justify-between items-center fixed w-full top-0 z-10 ">

@@ -11,7 +11,6 @@ import HomePage from './components/Home';
 import Header from './layout/Header';
 import Footer from './layout/Footer';
 import About from './navBarLink/Aboutus';
-import DonateFood from './navBarLink/DonateFood';
 import Chatbot from './components/ChatBot';
 import Contact from './pages/Contact';
 import Programs from './pages/Program';
@@ -28,6 +27,7 @@ import DonationPointsPage from './pages/DonationPoints';
 import DonationWithLocation from './pages/DonationWithLocation';
 import VolunteerLocationsPage from './pages/VolunteerLocationPage';
 import { VolunteerProvider } from './context/VolunteerContext';
+import GetInvolved from './navBarLink/GetInvolved';
 function App() {
   const [count, setCount] = useState(0);
 
@@ -47,7 +47,7 @@ function App() {
             <Route path="/SignUp" element={<Signup />} />
             <Route path="/donation" element={<ProtectedRoute element={DonationOption} />} />
             <Route path="/about" element={<ProtectedRoute element={About} />} />
-            <Route path="/donates" element={<ProtectedRoute element={DonateFood} />} />
+          
             <Route path="/programs" element={<ProtectedRoute element={Programs} />} />
             <Route path="/contact" element={<ProtectedRoute element={Contact} />} />
             <Route path="/donat" element={<ProtectedRoute element={Donation}/>}/>
@@ -59,6 +59,7 @@ function App() {
             <Route path="/drop" element={<ProtectedRoute element={DropDonation}/>}/>
             <Route path="/donate" element={<ProtectedRoute element={DonationWithLocation}/>}/>
             <Route path="/volunteer" element={<ProtectedRoute element={VolunteerLocationsPage}/>}/>
+            <Route path="/getinvolved" element={<ProtectedRoute element={GetInvolved}/>}/>
           </Routes>
           <Chatbot />
           <Footer />
