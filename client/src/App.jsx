@@ -15,7 +15,6 @@ import Chatbot from './components/ChatBot';
 import Contact from './pages/Contact';
 import Programs from './pages/Program';
 import ProtectedRoute from './components/Protected';
-import Donation from './pages/donation';
 import UserRequests from './VolunteeringRequest';
 import PickPage from './pick';
 import Map from './components/Map';
@@ -50,7 +49,7 @@ function App() {
           
             <Route path="/programs" element={<ProtectedRoute element={Programs} />} />
             <Route path="/contact" element={<ProtectedRoute element={Contact} />} />
-            <Route path="/donat" element={<ProtectedRoute element={Donation}/>}/>
+           
             <Route path="/requests" element={<ProtectedRoute element={UserRequests}/>}/>
             <Route path="/pick" element={<ProtectedRoute element={PickPage}/>}/>
             <Route path="/map" element={<ProtectedRoute element={Map}/>}/>
