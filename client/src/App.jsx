@@ -16,7 +16,7 @@ import Contact from './pages/Contact';
 import Programs from './pages/Program';
 import ProtectedRoute from './components/Protected';
 import UserRequests from './VolunteeringRequest';
-import PickPage from './pick';
+import PickDonation from './pick';
 import Map from './components/Map';
 import { LocationProvider } from './context/LocationContext';
 import PathFinderMap from './components/PickComponent';
@@ -51,7 +51,7 @@ function App() {
             <Route path="/contact" element={<ProtectedRoute element={Contact} />} />
            
             <Route path="/requests" element={<ProtectedRoute element={UserRequests}/>}/>
-            <Route path="/pick" element={<ProtectedRoute element={PickPage}/>}/>
+            <Route path="/pick" element={<ProtectedRoute element={PickDonation}/>}/>
             <Route path="/map" element={<ProtectedRoute element={Map}/>}/>
             <Route path="/mapc" element={<ProtectedRoute element={PathFinderMap}/>}/>
             <Route path="/mapd" element={<ProtectedRoute element={PathFinderMapDrop}/>}/>
