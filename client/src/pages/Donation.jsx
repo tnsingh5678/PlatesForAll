@@ -21,7 +21,7 @@ const Donation = () => {
   const submitHandler = async (e) => {
     e.preventDefault(); 
     try {
-      const response = await fetch(`http://localhost:4000/donation/donor/${donorId}`, {
+      const response = await fetch(`https://platesforall.onrender.com:4000/donation/donor/${donorId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,7 +42,7 @@ const Donation = () => {
         
         console.log("Donation submitted:", data);
         toast.success("You have succesfully donated food");
-        const res = await axios.post('http://localhost:4000/donation/find',{
+        const res = await axios.post('https://platesforall.onrender.com:4000/donation/find',{
           latitude : coords[0].toString(),
           longitude : coords[1].toString(),
           DonationId : data.donation._id

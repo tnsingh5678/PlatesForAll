@@ -52,7 +52,7 @@ const LocationProvider = ({ children }) => {
             const sendLocation = async () => {
                 try {
                     console.log("Sending location:", { lat, lon, userId }); // Log to verify values
-                    const response = await axios.post('http://localhost:4000/location/setLocation', {
+                    const response = await axios.post('https://platesforall.onrender.com:4000/location/setLocation', {
                         lat,
                         lon,
                         userId

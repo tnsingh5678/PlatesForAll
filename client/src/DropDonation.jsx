@@ -16,7 +16,7 @@ const DropDonation = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post(`http://localhost:4000/donation/drop/${acceptedRequest}`, {
+            const response = await axios.post(`https://platesforall.onrender.com:4000/donation/drop/${acceptedRequest}`, {
                 Lat: lat,
                 Lon: lon,
             });

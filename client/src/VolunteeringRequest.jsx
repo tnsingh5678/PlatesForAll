@@ -25,7 +25,7 @@ const UserRequests = () => {
       }
 
       try {
-        const response = await axios.get(`http://localhost:4000/user/findRequests/${user.userId}`, {
+        const response = await axios.get(`https://platesforall.onrender.com:4000/user/findRequests/${user.userId}`, {
           headers: {
             'Content-Type': 'application/json',
             // Include other headers as needed
@@ -51,7 +51,7 @@ const UserRequests = () => {
   // Accept a request
   const onAccept = async (reqId) => {
     try {
-      const response = await axios.post(`http://localhost:4000/donation/accept/${user.userId}/${reqId}`, {}, {
+      const response = await axios.post(`https://platesforall.onrender.com:4000/donation/accept/${user.userId}/${reqId}`, {}, {
         headers: {
           'Content-Type': 'application/json',
           // Include other headers as needed

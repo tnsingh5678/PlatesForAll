@@ -71,7 +71,7 @@ const PathFinderMapDrop = () => {
     useEffect(() => {
       const fetchDestination = async () => {
         try {
-          const response = await axios.get(`http://localhost:4000/location/volunteer-drop/${user.userId}`);
+          const response = await axios.get(`https://platesforall.onrender.com:4000/location/volunteer-drop/${user.userId}`);
           const data = response.data.destination;
           if (data && data.lat && data.lng) {
             setDestination({ lat: data.lat, lng: data.lng });
