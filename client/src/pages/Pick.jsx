@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
-import { UserContext } from './context/UserContext';
-import { AcceptedRequestContext } from './context/AcceptedRequestContext';
-import { LocationContext } from './context/LocationContext';
+import { UserContext } from '../context/UserContext';
+import { AcceptedRequestContext } from '../context/AcceptedRequestContext';
+import { LocationContext } from '../context/LocationContext';
 import { useNavigate } from "react-router-dom";
 
 const PickDonation = () => {

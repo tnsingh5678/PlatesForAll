@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserContext } from "./context/UserContext";
-import { AcceptedRequestContext } from './context/AcceptedRequestContext';
+import { UserContext } from '../context/UserContext';
+import { AcceptedRequestContext } from '../context/AcceptedRequestContext';
 import axios from "axios";
 
 const UserRequests = () => {

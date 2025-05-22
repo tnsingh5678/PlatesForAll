@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import axios from 'axios';
-import { LocationContext } from './context/LocationContext';
-import { AcceptedRequestContext } from './context/AcceptedRequestContext';
+import { LocationContext } from '../context/LocationContext';
+import { AcceptedRequestContext } from '../context/AcceptedRequestContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
