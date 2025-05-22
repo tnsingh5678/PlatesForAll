@@ -13,7 +13,7 @@ const app = express();
 dbConnect();
 app.use(cors());
 app.use(cors({
-    origin: "https://platesforallfrontend.onrender.com:5173",
+    origin: "https://platesforallfrontend.onrender.com",
     methods: ["GET","POST","PUT","DELETE"],
     credentials: true
 }));
