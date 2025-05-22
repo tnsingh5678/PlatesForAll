@@ -21,7 +21,7 @@ import Map from './components/Map';
 import { LocationProvider } from './context/LocationContext';
 import PathFinderMap from './components/PickComponent';
 import PathFinderMapDrop from './components/DropComponent';
-import DropDonation from './DropDonation';
+import DropDonation from './pages/DropDonation';
 import DonationPointsPage from './pages/DonationPoints';
 import DonationWithLocation from './pages/DonationWithLocation';
 import VolunteerLocationsPage from './pages/VolunteerLocationPage';
