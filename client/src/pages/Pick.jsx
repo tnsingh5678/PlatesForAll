@@ -20,7 +20,7 @@ const PickDonation = () => {
 
         try {
             const response = await axios.post(
-                `https://platesforall.onrender.com:4000/donation/pick/${user.userId}/${acceptedRequest}`,
+                `https://platesforall.onrender.com/donation/pick/${user.userId}/${acceptedRequest}`,
                 { Lat: lat, Lon: lon }
             );
             setMessage(response.data.message);

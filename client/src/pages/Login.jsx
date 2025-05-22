@@ -14,7 +14,7 @@ export default function Login(){
     const onLogin = async (e)=>{
         try {
             e.preventDefault();
-            const response = await axios.post('https://platesforall.onrender.com:4000/auth/login',{
+            const response = await axios.post('https://platesforall.onrender.com/auth/login',{
                 password,
                 email
             })

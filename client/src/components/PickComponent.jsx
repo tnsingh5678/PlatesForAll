@@ -70,7 +70,7 @@ const PathFinderMap = () => {
     useEffect(() => {
       const fetchDestination = async () => {
         try {
-          const response = await axios.get(`https://platesforall.onrender.com:4000/location/volunteer/${user.userId}`);
+          const response = await axios.get(`https://platesforall.onrender.com/location/volunteer/${user.userId}`);
           setDestination(response.data.destination);
           console.log("Destination:", response.data.destination);
         } catch (error) {

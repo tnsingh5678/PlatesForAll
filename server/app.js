@@ -11,7 +11,7 @@ dotenv.config();
 const app = express();
 
 dbConnect();
-app.use(cors());
+
 app.use(cors({
     origin: "https://platesforallfrontend.onrender.com",
     methods: ["GET","POST","PUT","DELETE"],

@@ -72,7 +72,7 @@ const DonationWithLocation = () => {
 
     try {
       const response = await axios.post(
-        `https://platesforall.onrender.com:4000/donation/donor/${donorId}`,
+        `https://platesforall.onrender.com/donation/donor/${donorId}`,
         {
           food,
           category,
@@ -89,7 +89,7 @@ const DonationWithLocation = () => {
         const data = response.data;
         console.log("Donation submitted:", data);
         toast.success("You have succesfully donated food");
-        const res = await axios.post('https://platesforall.onrender.com:4000/donation/find',{
+        const res = await axios.post('https://platesforall.onrender.com/donation/find',{
           latitude : coords[0].toString(),
           longitude : coords[1].toString(),
           DonationId : data.donation._id

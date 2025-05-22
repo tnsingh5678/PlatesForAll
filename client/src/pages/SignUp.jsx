@@ -13,7 +13,7 @@ export default function Signup(){
     const onSignUp = async (e)=>{
         try {
             e.preventDefault();
-            await axios.post('https://platesforall.onrender.com:4000/auth/signup',{
+            await axios.post('https://platesforall.onrender.com/auth/signup',{
                 username,
                 password,
                 email
